@@ -1,6 +1,6 @@
 # Multi-stage build — pola dari produksi (disederhanakan, tanpa DB)
 # Stage 1: Build
-FROM golang:1.26.6-alpine AS builder
+FROM golang:1.26.10-alpine AS builder
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
@@ -19,6 +19,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
 
 # Stage 2: Runtime (minimal)
 FROM alpine:3.20
+RUN apk update && apk upgrade --no-cache
 RUN addgroup -S appuser && adduser -S appuser -G appuser
 RUN apk add --no-cache tzdata ca-certificates curl
 ENV TZ=Asia/Jakarta
